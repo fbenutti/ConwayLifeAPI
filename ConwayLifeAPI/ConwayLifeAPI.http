@@ -1,0 +1,6 @@
+@ConwayLifeAPI_HostAddress = http://localhost:5268
+
+GET {{ConwayLifeAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
