@@ -5,6 +5,6 @@
         /// <summary>
         /// 2D Array: true = alive, false = dead;
         /// </summary>
-        public bool[,] Cells { get; set; } = new bool[0, 0];
+        public bool[][] Cells { get; set; } = Array.Empty<bool[]>();
     }
 }

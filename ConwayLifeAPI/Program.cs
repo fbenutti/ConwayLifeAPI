@@ -1,5 +1,8 @@
 
+using Asp.Versioning;
 using ConwayLifeAPI.Data;
+using ConwayLifeAPI.Services;
+using ConwayLifeAPI.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace ConwayLifeAPI
@@ -17,18 +20,20 @@ namespace ConwayLifeAPI
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            var app = builder.Build();
-
-            //IConfigurationRoot configuration = new ConfigurationBuilder()
-            //    .SetBasePath(Directory.GetCurrentDirectory())
-            //    .AddJsonFile("appsettings.json")
-            //    .Build();
-
-            //builder.Services.AddDbContext<AppDbContext>(options =>
-            //    options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
-
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+            builder.Services.AddApiVersioning(o => {
+                o.ReportApiVersions = true;
+                o.AssumeDefaultVersionWhenUnspecified = true;
+                o.DefaultApiVersion = new ApiVersion(1, 0);
+            });
+
+            builder.Services.AddScoped<IBoardService, BoardService>();
+
+            var app = builder.Build();
+
+            
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
