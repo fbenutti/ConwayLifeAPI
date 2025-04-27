@@ -1,6 +1,7 @@
 
 using Asp.Versioning;
-using ConwayLifeAPI.Data;
+using ConwayLifeAPI.Data.Context;
+using ConwayLifeAPI.Dependencies;
 using ConwayLifeAPI.Services;
 using ConwayLifeAPI.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -31,8 +32,11 @@ namespace ConwayLifeAPI
 
             builder.Services.AddScoped<IBoardService, BoardService>();
 
+            builder.Services.AddServicesDependency();
+
             var app = builder.Build();
 
+            
             
 
             // Configure the HTTP request pipeline.

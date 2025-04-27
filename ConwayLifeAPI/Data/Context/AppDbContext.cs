@@ -1,7 +1,7 @@
 ﻿using ConwayLifeAPI.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace ConwayLifeAPI.Data
+namespace ConwayLifeAPI.Data.Context
 {
     public class AppDbContext : DbContext
     {

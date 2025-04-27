@@ -9,8 +9,7 @@ namespace ConwayLifeAPI.Controllers
     /// Controller for managing boards in the Conway's Game of Life API.
     /// </summary>
     [ApiController]
-    [ApiVersion("1.0")]
-    [Route("api/v{version:apiVersion}/[controller]")]
+    [Route("api/[controller]")]
     public class BoardsController : ControllerBase
     {
         private readonly IBoardService _boardService;
@@ -44,6 +43,20 @@ namespace ConwayLifeAPI.Controllers
 
         }
 
+        [HttpGet("/get-board/{id}")]
+        public async Task<IActionResult> GetBoard(Guid id, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var nextState = await _boardService.GetBoardAsync(id, cancellationToken);
+                return Ok(nextState);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+
         [HttpGet("/next-state/{id}")]
         public async Task<IActionResult> GetNextState(Guid id, CancellationToken cancellationToken)
         {
@@ -51,6 +64,24 @@ namespace ConwayLifeAPI.Controllers
             {
                 var nextState = await _boardService.GetNextStateAsync(id, cancellationToken);
                 return Ok(nextState);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+
+        [HttpGet("/state-ahead/{id}/{steps}")]
+        public async Task<IActionResult> GetFutureState(Guid id, int steps, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var futureState = await _boardService.GetStateAheadAsync(id, steps, cancellationToken);
+                return Ok(futureState);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
             }
             catch (Exception ex)
             {
