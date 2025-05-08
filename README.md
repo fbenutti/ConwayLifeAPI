@@ -1,6 +1,6 @@
 ﻿# Conway's Game of Life API
 
-A production-ready C# API implementing Conway's Game of Life using ASP.NET Core 8 and PostgreSQL.
+A production-ready C# API implementing Conway's Game of Life using .NET 9 and PostgreSQL.
 
 ## Features
 
@@ -18,7 +18,7 @@ A production-ready C# API implementing Conway's Game of Life using ASP.NET Core 
 
 ### Prerequisites
 
-- [.NET 8 SDK](https://dotnet.microsoft.com/download)
+- [.NET 9 SDK](https://dotnet.microsoft.com/download)
 - [Docker](https://www.docker.com/products/docker-desktop)
 
 ### Clone and Run with Docker
