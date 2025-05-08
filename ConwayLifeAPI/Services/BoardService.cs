@@ -35,11 +35,15 @@ namespace ConwayLifeAPI.Services
         {
             return await _boardRepository.GetNextStateAsync(boardId, cancellationToken);
         }
-        public async Task<bool[][]> GetStateAheadAsync(Guid boardId, int steps, CancellationToken cancellationToken)
+        public async Task<bool[][]> GetStateAheadAsync(Guid boardId, int steps, bool saveNewBoard, CancellationToken cancellationToken)
         {
-            return await _boardRepository.GetStateAheadAsync(boardId, steps, cancellationToken);
+            return await _boardRepository.GetStateAheadAsync(boardId, steps, saveNewBoard, cancellationToken);
         }
 
-        
+        public async Task<bool[][]> GetFinalStateAsync(Guid boardId, bool saveNewBoard, CancellationToken cancellationToken)
+        {
+            return await _boardRepository.GetFinalStateAsync(boardId, saveNewBoard, cancellationToken);
+        }
+
     }
 }

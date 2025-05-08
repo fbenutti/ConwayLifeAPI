@@ -9,6 +9,7 @@ namespace ConwayLifeAPI.Services.Interfaces
         Task<Board> CreateBoardAsync(CreateBoardDto dto, CancellationToken cancellationToken);
         Task<bool[][]> GetBoardAsync(Guid boardId, CancellationToken cancellationToken);
         Task<bool[][]> GetNextStateAsync(Guid boardId, CancellationToken cancellationToken);
-        Task<bool[][]> GetStateAheadAsync(Guid boardId, int steps, CancellationToken cancellationToken);
+        Task<bool[][]> GetStateAheadAsync(Guid boardId, int steps, bool saveNewBoard, CancellationToken cancellationToken);
+        Task<bool[][]> GetFinalStateAsync(Guid boardId, bool saveNewBoard, CancellationToken cancellationToken);
     }
 }

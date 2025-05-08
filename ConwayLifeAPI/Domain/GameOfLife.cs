@@ -2,6 +2,8 @@
 {
     public class GameOfLife
     {
+        public const int MAX_STEPS = 100;
+
         /// <summary>
         /// Analyses if two boards are identical
         /// </summary>
@@ -97,6 +99,17 @@
                 }
             }
             return liveNeighbors;
+        }
+
+        public bool checkSteps(int steps)
+        {
+            if (steps < 1)
+                throw new ArgumentException("Steps must be greater than 0");
+
+            if (steps > GameOfLife.MAX_STEPS)
+                throw new ArgumentException("Steps must be less than 100");
+
+            return true;
         }
     }
 }

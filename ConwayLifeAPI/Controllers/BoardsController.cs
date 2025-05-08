@@ -71,12 +71,12 @@ namespace ConwayLifeAPI.Controllers
             }
         }
 
-        [HttpGet("/state-ahead/{id}/{steps}")]
-        public async Task<IActionResult> GetFutureState(Guid id, int steps, CancellationToken cancellationToken)
+        [HttpGet("/state-ahead/{id}/{steps}/{saveNewBoard}")]
+        public async Task<IActionResult> GetFutureState(Guid id, int steps, bool saveNewBoard, CancellationToken cancellationToken)
         {
             try
             {
-                var futureState = await _boardService.GetStateAheadAsync(id, steps, cancellationToken);
+                var futureState = await _boardService.GetStateAheadAsync(id, steps, saveNewBoard, cancellationToken);
                 return Ok(futureState);
             }
             catch (ArgumentException ex)
@@ -88,5 +88,24 @@ namespace ConwayLifeAPI.Controllers
                 return NotFound(ex.Message);
             }
         }
+
+        [HttpGet("/final-state/{id}/{saveNewBoard}")]
+        public async Task<IActionResult> GetFinalState(Guid id, bool saveNewBoard, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var futureState = await _boardService.GetFinalStateAsync(id, saveNewBoard, cancellationToken);
+                return Ok(futureState);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+
     }
 }

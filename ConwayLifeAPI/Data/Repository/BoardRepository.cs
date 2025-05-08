@@ -2,6 +2,7 @@
 using ConwayLifeAPI.Domain;
 using ConwayLifeAPI.Models;
 using Newtonsoft.Json;
+using System.Threading;
 
 namespace ConwayLifeAPI.Data.Repository
 {
@@ -24,7 +25,7 @@ namespace ConwayLifeAPI.Data.Repository
 
             var jsonBoard = JsonConvert.DeserializeObject<bool[][]>(board.StateJson);
 
-            return jsonBoard;
+            return jsonBoard!;
         }
         public async Task<Board> AddBoardAsync(Board board, CancellationToken cancellationToken)
         {
@@ -46,26 +47,51 @@ namespace ConwayLifeAPI.Data.Repository
 
             return nextState;
         }
-        public async Task<bool[][]> GetStateAheadAsync(Guid boardId, int steps, CancellationToken cancellationToken)
+        public async Task<bool[][]> GetStateAheadAsync(Guid boardId, int steps, bool persistNewBoard, CancellationToken cancellationToken)
         {
-            if (steps < 1)
-                throw new ArgumentException("Steps must be greater than 0");
+            _ = _gameOfLife.checkSteps(steps);
 
             var board = await _context.Boards.FindAsync(boardId, cancellationToken);
 
+            return await ReturnBoardStateAfterIteration(board!, steps, persistNewBoard, cancellationToken);
+
+        }
+        public async Task UpdateBoardAsync(Board board, CancellationToken cancellationToken)
+        {
+            _context.Boards.Update(board);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<bool[][]> GetFinalStateAsync(Guid boardId, bool persistNewBoard, CancellationToken cancellationToken)
+        {
+            var board = await _context.Boards.FindAsync(boardId, cancellationToken);
+
+            return await ReturnBoardStateAfterIteration(board, null, persistNewBoard, cancellationToken);
+        }
+
+        private async Task<bool[][]> ReturnBoardStateAfterIteration(Board board, int? steps, bool persistNewBoard, CancellationToken cancellationToken)
+        {
             if (board == null)
-            {
                 throw new Exception("Board not found");
-            }
+
+            int? maxSteps = steps;
+
+            if(!steps.HasValue)
+                maxSteps = GameOfLife.MAX_STEPS;
 
             var currentState = JsonConvert.DeserializeObject<bool[][]>(board.StateJson);
 
-            for (int i = 0; i < steps; i++)
+            for (int i = 0; i < maxSteps; i++)
             {
                 var nextState = _gameOfLife.CalculateNextState(currentState!);
 
                 if (_gameOfLife.AreBoardsEqual(currentState!, nextState))
                 {
+                    if (persistNewBoard)
+                    {
+                        board.StateJson = JsonConvert.SerializeObject(currentState!);
+                        await UpdateBoardAsync(board, cancellationToken);
+                    }
                     // Board stabilized, no need to continue
                     return nextState;
                 }
@@ -73,12 +99,16 @@ namespace ConwayLifeAPI.Data.Repository
                 currentState = nextState;
             }
 
+            if (!steps.HasValue)
+                throw new Exception($"Board did not stabilize after {GameOfLife.MAX_STEPS} steps.");
+
+            if (persistNewBoard)
+            {
+                board.StateJson = JsonConvert.SerializeObject(currentState!);
+                await UpdateBoardAsync(board, cancellationToken);
+            }
+
             return currentState!;
-        }
-        public async Task UpdateBoardAsync(Board board, CancellationToken cancellationToken)
-        {
-            _context.Boards.Update(board);
-            await _context.SaveChangesAsync();
         }
 
     }
