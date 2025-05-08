@@ -1,0 +1,26 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_DB: conway
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: local_password
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  api:
+    build: .
+    depends_on:
+      - db
+    environment:
+      ConnectionStrings__DefaultConnection: Host=db;Port=5432;Database=ConwayDb;Username=postgres;Password=local_password
+    ports:
+      - "5000:5000"
+
+volumes:
+  pgdata:

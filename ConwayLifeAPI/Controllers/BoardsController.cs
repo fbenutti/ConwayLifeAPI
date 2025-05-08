@@ -34,7 +34,7 @@ namespace ConwayLifeAPI.Controllers
 
                 var board = await _boardService.CreateBoardAsync(dto, cancellationToken);
 
-                return Ok(new { board.Id });
+                return Ok(new CreateBoardResponse { Id = board.Id });
             }
             catch (Exception ex)
             {
@@ -72,7 +72,7 @@ namespace ConwayLifeAPI.Controllers
         }
 
         [HttpGet("/state-ahead/{id}/{steps}/{saveNewBoard}")]
-        public async Task<IActionResult> GetFutureState(Guid id, int steps, bool saveNewBoard, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetStateAhead(Guid id, int steps, bool saveNewBoard, CancellationToken cancellationToken)
         {
             try
             {
